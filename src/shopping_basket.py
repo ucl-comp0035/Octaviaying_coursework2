@@ -4,6 +4,56 @@ import pandas
 import sqlite3
 
 
+class Controller:
+    def __init__(self):
+        self.app = Flask(__name__)
+        self.api = Api(self.app)
+        self.api.add_resource(DataController, '/data')
+        self.api.add_resource(CountryController, '/country/<country>')
+        self.api.add_resource(IndicatorController, '/indicator/<name>')
+
+    def run(self):
+        self.app.run()
+
+class DataController(Resource):
+    def __init__(self):
+        self.service = Service()
+
+    def get(self):
+        res = self.service.find_overall()
+        return {'data':res}
+
+class CountryController(Resource):
+
+    def __init__(self):
+        self.service = Service()
+    def get(self,country):
+        res = self.service.find_country(country)
+        return {'data':res}
+
+class IndicatorController(Resource):
+    def __init__(self):
+        self.service = Service()
+
+    def get(self,name):
+        res = self.service.find_indicator(name)
+
+class Service:
+    def __init__(self):
+        self.dao = Dao()
+
+    def find_country(self, country):
+        res = self.dao.find_country(country)
+        return res
+
+    def find_overall(self):
+        res = self.dao.find_overall()
+        return res
+
+    def find_indicator(self,name):
+        res = self.dao.find_indicator()
+        return res
+
 class Dao:
     def __init__(self):
         self.table_country = "country"
@@ -53,4 +103,5 @@ class Dao:
 
 
 if __name__ == '__main__':
-    Dao()
+    controller = Controller()
+    controller.run()

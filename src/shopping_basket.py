@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource
+from flask_cors import CORS
 import pandas
 import sqlite3
 
@@ -8,6 +9,7 @@ class Controller:
     def __init__(self):
         self.app = Flask(__name__)
         self.api = Api(self.app)
+        CORS(self.app,resources=r'/*')
         self.api.add_resource(DataController, '/data')
         self.api.add_resource(CountryController, '/country/<country>')
         self.api.add_resource(IndicatorController, '/indicator/<name>')
